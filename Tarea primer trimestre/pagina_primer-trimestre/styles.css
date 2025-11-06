@@ -1,0 +1,106 @@
+/* styles.css - estilos globales para CineUp */
+
+:root{
+  --accent:#ff6600;
+  --muted:#6c757d;
+  --bg:#111;
+  --card-bg:#1b1b1b;
+  --surface-bg: #000000; /* header/footer background */
+  --surface-text: #ffffff; /* header/footer content color */
+  --icon-blue: #9ecfff; /* social icons */
+}
+
+body{
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  /* Background image from img/ folder with a subtle dark overlay for readability.
+    Primary: img/back_to_the_future.jpg (place your Back to the Future image here).
+    Fallback: the generated image already present in the folder. */
+  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('img/back_to_the_future.jpg'), url('img/Gemini_Generated_Image_wzadqnwzadqnwzad.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #e9ecef;
+}
+
+.container{max-width:1000px}
+
+/* Header */
+.site-header{background:var(--surface-bg) !important;color:var(--surface-text) !important;box-shadow:0 2px 6px rgba(0,0,0,0.4)}
+.site-brand a{color:var(--surface-text) !important}
+.site-nav .nav-link{color:var(--surface-text) !important;margin-right:10px}
+
+/* Logo in header */
+.site-brand img{height:40px;width:auto;margin-right:10px;border-radius:4px}
+.site-nav .nav-link:hover{color:var(--accent);text-decoration:underline}
+
+/* Force header links and nav text to white even if Bootstrap utilities exist */
+.site-header a, .site-header span { color: var(--surface-text) !important }
+
+/* Main */
+main.content{padding-bottom:24px}
+
+/* Tables */
+table{background:#0b0b0b;border:1px solid rgba(255,255,255,0.04)}
+th{background:#0d6efd;color:#fff}
+th,td{padding:10px;}
+tr:nth-child(even){background:rgba(255,255,255,0.01)}
+
+/* Forms */
+input[type="text"],input[type="email"],input[type="number"],input[type="password"],select,textarea{
+  background:#121212;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px;border-radius:6px;
+}
+button{background:var(--accent);border:0;color:#111;padding:8px 12px;border-radius:6px;font-weight:700}
+button:hover{opacity:0.95}
+
+/* Accent button used across the site */
+.btn-accent{background:var(--accent);color:#111;border:0;padding:8px 12px;border-radius:6px;font-weight:700}
+.btn-accent:hover{opacity:0.95}
+
+/* Footer */
+.site-footer{background:var(--surface-bg) !important;color:var(--surface-text) !important;border-top:1px solid rgba(255,255,255,0.03);padding:24px 0}
+.site-footer a{color:var(--surface-text) !important}
+.site-footer .social a{margin-left:12px;display:inline-block;opacity:0.95;color:var(--icon-blue) !important}
+.site-footer .social a:hover{opacity:1;transform:translateY(-2px)}
+
+/* Ensure SVG icons inherit the link color */
+.site-footer .social a svg{fill:currentColor}
+
+/* Centered policies link (responsive) */
+/* Policies center: make it a normal centered column and vertically center on md+ */
+.site-footer .policies-center{position:static;transform:none;text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center}
+@media (min-width:768px){
+  .site-footer .policies-center{margin-top:0}
+}
+
+/* Responsive tweaks */
+@media (max-width:767px){
+  .site-footer .policies-center{position:static;transform:none;margin-top:12px}
+  .site-footer .social{margin-top:12px;text-align:left}
+  .site-header .site-nav{display:flex;flex-direction:column;gap:6px}
+}
+
+/* Small utility */
+.lead{color:#cbd5e1}
+
+/* Make links readable on dark background inside header */
+a.text-white{text-decoration:none}
+
+/* Improve form visuals in footer */
+.site-footer input{width:100%;box-sizing:border-box}
+
+/* Cards for movie list (optional) */
+.movie-card{background:var(--card-bg);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+
+/* Accessibility focus */
+a:focus,button:focus,input:focus{outline:2px solid rgba(255,102,0,0.3);outline-offset:2px}
+
+/* Intro section styles */
+.intro-section{color:#e9ecef}
+.intro-section .display-6{font-weight:700;margin-bottom:0.5rem}
+.intro-section .lead{color:rgba(233,236,239,0.9);margin-bottom:1rem}
+.film-reel{width:220px;max-width:100%;padding:6px;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.15));box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.film-reel img{display:block;border-radius:8px;object-fit:cover;height:160px;width:100%}
+@media (max-width:767px){
+  .film-reel img{height:140px}
+}
