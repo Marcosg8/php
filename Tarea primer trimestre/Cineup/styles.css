@@ -1,0 +1,1041 @@
+/* styles.css - estilos globales para CineUp
+   Comentarios en español explicando las secciones y decisiones de diseño.
+*/
+
+/* Variables CSS: definimos colores reutilizables para mantener coherencia */
+:root{
+  --accent:#ff6600;      /* color de acento principal (botones, hover, etc.) */
+  --muted:#6c757d;       /* color para textos secundarios */
+  --bg:#111;             /* fondo principal oscuro */
+  --card-bg:#1b1b1b;     /* fondo de tarjetas */
+  --surface-bg: #000000; /* fondo para header/footer: capa superficial */
+  --surface-text: #ffffff; /* color del texto dentro de header/footer */
+  --icon-blue: #9ecfff;  /* color para iconos sociales */
+}
+
+/* Dark professional theme for modals / cookie blocker */
+:root {
+  --site-bg: #0b0f14;
+  --panel-bg: #0f1720;
+  --muted: #94a3b8;
+  --text: #e6eef8;
+  --panel-elev: rgba(2,6,23,0.6);
+  /* Accent por defecto cambiado a tono oscuro (se sobreescribe con --site-theme-color al aplicar) */
+  --accent: var(--site-theme-color, #0d6f6f);
+}
+
+.theme-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(2,6,23,0.6), rgba(2,6,23,0.6));
+  z-index: 1200;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.theme-modal[aria-hidden="false"],
+.theme-modal[style*="display:flex"] {
+  display: flex !important;
+}
+
+.theme-modal__panel {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 12px;
+  padding: 18px;
+  color: var(--text);
+  box-shadow: 0 8px 30px var(--panel-elev);
+  border: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
+}
+
+.theme-modal__header h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.theme-modal__body {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 12px;
+}
+
+.theme-modal__controls { display:flex; gap:12px; align-items:center; width:100%; }
+.theme-modal__controls input[type="color"] {
+  width:52px; height:40px; padding:4px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
+  background:transparent;
+  cursor:pointer;
+}
+
+.theme-modal__presets { display:flex; gap:8px; align-items:center; }
+.theme-modal__presets .preset-color {
+  width:36px; height:36px; border-radius:8px; border:1px solid rgba(255,255,255,0.06);
+  cursor:pointer; box-shadow: 0 2px 8px rgba(2,6,23,0.6);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.theme-modal__presets .preset-color:hover { transform: translateY(-3px); box-shadow:0 6px 18px rgba(2,6,23,0.7); }
+
+.theme-modal__footer {
+  display:flex; gap:10px; justify-content:flex-end; align-items:center;
+}
+
+/* Button helpers (light additions; keep consistent with existing .btn classes) */
+.btn {
+  font-weight:600;
+  border-radius:8px;
+  padding:8px 14px;
+  cursor:pointer;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--text);
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: rgba(255,255,255,0.04);
+  box-shadow: 0 6px 18px rgba(15,23,42,0.25);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); filter:brightness(.98); }
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.btn-ghost:hover { color: var(--text); }
+
+/* Cookie blocker */
+.cookie-blocker {
+  display: none;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  z-index: 1250;
+  background: linear-gradient(180deg, rgba(2,6,23,0.88), rgba(2,6,23,0.94));
+  padding: 1rem;
+}
+.cookie-blocker[aria-hidden="false"],
+.cookie-blocker[style*="display:flex"] { display:flex !important; }
+
+.cookie-blocker__card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--panel-bg);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--text);
+  box-shadow: 0 18px 50px rgba(2,6,23,0.7);
+  border: 1px solid rgba(255,255,255,0.03);
+  text-align: center;
+}
+.cookie-blocker__card h2 { margin:0 0 8px; color:var(--text); font-size:1.1rem; }
+.cookie-blocker__card p { color:var(--muted); margin:0 0 16px; line-height:1.4; }
+
+.cookie-blocker__actions { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
+.cookie-blocker__actions .leave { text-decoration:none; padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); color:var(--muted); background:transparent; }
+
+@media (max-width:520px){
+  .theme-modal__panel, .cookie-blocker__card { padding:14px; border-radius:10px; }
+  .theme-modal__body { flex-direction:column; align-items:flex-start; gap:10px; }
+  .cookie-blocker__actions { flex-direction:column-reverse; gap:8px; }
+}
+
+/* Estilos globales del body:
+   - tipografías preferidas
+   - fondo con imagen y una capa oscura para mejorar la legibilidad del texto
+   - comportamiento del background para que cubra toda la pantalla y se fije
+*/
+body{
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  /* Imagen de fondo principal con overlay oscuro. Si falta la imagen principal,
+     se usa una imagen generada como fallback. */
+  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('img/back_to_the_future.jpg'), url('img/Gemini_Generated_Image_wzadqnwzadqnwzad.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #e9ecef; /* color del texto principal sobre fondo oscuro */
+}
+
+/* Contenedor central con ancho máximo para limitar la línea de lectura */
+.container{max-width:1000px}
+
+/* Header / cabecera:
+   - fondo y color forzados para asegurar legibilidad sobre imágenes de fondo
+   - sombra sutil para separarlo del contenido
+*/
+.site-header{background:var(--surface-bg) !important;color:var(--surface-text) !important;box-shadow:0 2px 6px rgba(0,0,0,0.4)}
+.site-brand a{color:var(--surface-text) !important}
+.site-nav .nav-link{color:var(--surface-text) !important;margin-right:10px}
+
+/* Logo en la cabecera:
+   - tamaño controlado y borde redondeado para mejor aspecto visual */
+.site-brand img{height:40px;width:auto;margin-right:10px;border-radius:4px}
+.site-nav .nav-link:hover{color:var(--accent);text-decoration:underline}
+
+/* Forzar color blanco para enlaces y spans dentro del header,
+   independiente de utilidades de Bootstrap u otros estilos */
+.site-header a, .site-header span { color: var(--surface-text) !important }
+
+/* Espaciado inferior del contenido principal */
+main.content{padding-bottom:24px}
+
+/* Tablas:
+   - fondo oscuro y borde sutil para integrarse con el tema
+   - th con color de encabezado azul para contraste */
+table{background:#0b0b0b;border:1px solid rgba(255,255,255,0.04)}
+th{background:#0d6efd;color:#fff}
+th,td{padding:10px;}
+tr:nth-child(even){background:rgba(255,255,255,0.01)}
+
+/* Formularios:
+   - inputs con fondo oscuro, bordes suaves y texto blanco
+   - padding y border-radius para mejor accesibilidad visual */
+input[type="text"],input[type="email"],input[type="number"],input[type="password"],select,textarea{
+  background:#121212;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px;border-radius:6px;
+}
+/* Botones primarios: color de acento y contraste alto */
+button{background:var(--accent);border:0;color:#111;padding:8px 12px;border-radius:6px;font-weight:700}
+button:hover{opacity:0.95}
+
+/* Clase reusable para botones de acento */
+.btn-accent{
+  background: #df710a !important; /* color solicitado */
+  color: #000000 !important;      /* texto en blanco para contraste */
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.btn-accent:hover{opacity:0.95}
+
+/* Hover y transición para botones de acento (Comprar ahora) */
+.btn-accent {
+  transition: background-color .14s ease, transform .12s ease, box-shadow .12s ease, opacity .12s;
+  will-change: transform, box-shadow, background-color;
+}
+
+/* Estado hover más visible: tono más oscuro, elevación y ligero desplazamiento */
+.btn-accent:hover,
+#cta-banner .btn-accent:hover {
+  background: #c95f09 !important; /* tono más oscuro que #df710a */
+  box-shadow: 0 10px 30px rgba(250, 250, 250, 0.18);
+  transform: translateY(-3px);
+  opacity: 1 !important;
+}
+
+/* Estado activo (clic) */
+.btn-accent:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+/* Enfoque accesible */
+.btn-accent:focus {
+  outline: 3px solid rgba(223,113,10,0.18);
+  outline-offset: 3px;
+}
+
+/* Asegura el CTA específico si hubiera reglas más concretas */
+#cta-banner .btn-accent { background:#df710a !important; border-color:#c95f09 !important; color:#fff !important; }
+
+/* Footer / pie de página:
+   - mismo tratamiento de superficie que el header para coherencia visual
+   - enlaces y iconos con colores adecuados */
+.site-footer{background:var(--surface-bg) !important;color:var(--surface-text) !important;border-top:1px solid rgba(255,255,255,0.03);padding:24px 0}
+.site-footer a{color:var(--surface-text) !important}
+.site-footer .social a{margin-left:12px;display:inline-block;opacity:0.95;color:var(--icon-blue) !important}
+.site-footer .social a:hover{opacity:1;transform:translateY(-2px)}
+
+/* Aseguramos que los iconos SVG hereden el color del enlace */
+.site-footer .social a svg{fill:currentColor}
+
+/* Centro de links de políticas: diseño responsivo y alineado al centro.
+   Se usa flex para centrar vertical y horizontalmente en pantallas medianas+ */
+.site-footer .policies-center{position:static;transform:none;text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center}
+@media (min-width:768px){
+  .site-footer .policies-center{margin-top:0}
+}
+
+/* Ajustes responsivos para móviles:
+   - colocamos la navegación y elementos del footer en columna para mejor lectura */
+@media (max-width:767px){
+  .site-footer .policies-center{position:static;transform:none;margin-top:12px}
+  .site-footer .social{margin-top:12px;text-align:left}
+  .site-header .site-nav{display:flex;flex-direction:column;gap:6px}
+}
+
+/* Utilidad pequeña para textos destacados */
+.lead{color:#cbd5e1}
+
+/* Enlaces blancos concretos (mantener sin subrayado por defecto) */
+a.text-white{text-decoration:none}
+
+/* Mejor visual de inputs en el footer: ocupar todo el ancho disponible */
+.site-footer input{width:100%;box-sizing:border-box}
+
+/* Tarjetas para listado de películas: fondo, padding y borde sutil */
+.movie-card{background:var(--card-bg);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+
+/* Foco accesible: outline visible para teclado y usuarios de asistencia */
+a:focus,button:focus,input:focus{outline:2px solid rgba(255,102,0,0.3);outline-offset:2px}
+
+/* Sección introductoria: títulos y texto principal */
+.intro-section{color:#e9ecef}
+.intro-section .display-6{font-weight:700;margin-bottom:0.5rem}
+.intro-section .lead{color:rgba(233,236,239,0.9);margin-bottom:1rem}
+/* Reel/foto destacada: tamaño fijo con sombra y radio para estética */
+.film-reel{width:220px;max-width:100%;padding:6px;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.15));box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.film-reel img{display:block;border-radius:8px;object-fit:cover;height:160px;width:100%}
+@media (max-width:767px){
+  .film-reel img{height:140px}
+}
+
+/* Carrusel:
+   - leyenda posicionada más baja y con overlay oscuro para legibilidad
+   - imágenes con object-fit para recorte controlado */
+.carousel-caption { bottom: 20px; }
+.carousel-caption .bg-overlay { background: rgba(0,0,0,0.55); padding: 12px; border-radius: 6px; }
+.carousel-img { width:100%; height: 420px; object-fit: cover; display:block; }
+/* Año de la película dentro de la leyenda: estilo destacado */
+.carousel-caption .movie-year { color: #ffffff !important; opacity: 0.95; font-weight: 600; margin-left:6px; }
+@media (max-width:767px){ .carousel-img{ height:220px; } }
+
+/* Franja superior de películas (miniaturas centradas) */
+.top-movies-center { padding: 12px 0; color: #fff; }
+.top-movies-center h2 { color: #fff; margin-bottom: 1rem; text-align:center; }
+
+/* Contenedor centrado que aloja las miniaturas de películas */
+.movies-row { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 28px; padding: 0 12px; }
+
+/* Miniatura individual: tamaño fijo y centrado */
+.movie-thumb { width: 180px; flex: 0 0 180px; text-align: center; }
+.thumb-img { width: 100%; height: 270px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto; box-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+.movie-thumb figcaption { margin-top: 8px; font-weight: 700; line-height: 1.1; max-height: 3.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; }
+
+/* Flechas/strip opcional: wrapper y scroll horizontal */
+.strip-wrap { display:flex; align-items:center; gap:12px; position:relative; }
+.strip { display:flex; gap:30px; overflow:hidden; scroll-behavior:smooth; padding:6px 12px; width:100%; }
+
+/* Ajustes responsivos para miniaturas */
+@media (max-width: 900px) {
+  .movie-thumb { width: 140px; flex: 0 0 140px; }
+  .thumb-img { height: 210px; }
+}
+@media (max-width: 520px) {
+  .movies-row { gap: 10px; }
+  .movie-thumb { width: 120px; flex:0 0 120px; }
+  .thumb-img { height: 180px; }
+}
+
+/* Ajustes específicos para hacer el carrusel más ancho y visualmente alargado:
+   - max-width mayor y control de overflow para que destaque en la página */
+#moviesCarousel {
+  position: relative;
+  width: 100%;
+  max-width: 1600px;     /* aumentado para hacerlo más ancho */
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#moviesCarousel .carousel-item {
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Imagen del carrusel: altura mayor para un aspecto más cinematográfico */
+#moviesCarousel .carousel-img,
+#moviesCarousel .carousel-item img {
+  display: block;
+  width: 100%;
+  height: 320px;         /* altura aumentada (desktop) */
+  object-fit: cover;
+  object-position: center center;
+  transition: height .18s ease;
+  border-radius: 8px;
+}
+
+/* Leyenda dentro del carrusel: posicionamiento lateral y overlay con ancho máximo */
+#moviesCarousel .carousel-caption {
+  bottom: 14px;
+  left: 4%;
+  right: 4%;
+  transform: none;
+  text-align: left;
+  padding: 0;
+}
+#moviesCarousel .carousel-caption .bg-overlay {
+  background: rgba(0,0,0,0.5);
+  padding: 12px 16px;
+  border-radius: 6px;
+  max-width: 820px; /* un poco más ancho para el nuevo tamaño */
+}
+
+/* Controles del carrusel: botones más grandes para facilitar interacción */
+#moviesCarousel .carousel-control-prev,
+#moviesCarousel .carousel-control-next {
+  width: 4rem;
+  height: 4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.95;
+}
+
+/* Ajustes responsivos para distintas anchuras: reducir alturas y adaptar overlay */
+@media (max-width: 1200px) {
+  #moviesCarousel .carousel-img,
+  #moviesCarousel .carousel-item img { height: 280px; }
+}
+@media (max-width: 992px) {
+  #moviesCarousel .carousel-img,
+  #moviesCarousel .carousel-item img { height: 260px; }
+  #moviesCarousel .carousel-caption .bg-overlay { max-width: 78%; }
+}
+@media (max-width: 768px) {
+  #moviesCarousel { max-width: 100%; padding: 0 8px; }
+  #moviesCarousel .carousel-img,
+  #moviesCarousel .carousel-item img { height: 220px; border-radius:6px; }
+  #moviesCarousel .carousel-caption .bg-overlay { max-width: 95%; padding: 8px; }
+}
+
+/* Top movies strip: estilo de carr
+.top-movies-strip { background: transparent; padding-bottom: 80px; }
+
+/* contenedor strip: tarjetas horizontales */
+.top-movies-strip .strip {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 20px 40px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+/* tarjeta individual */
+.movie-card {
+  width: 220px;
+  flex: 0 0 auto;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+.movie-card:focus { transform: translateY(-6px); transition: transform .18s ease; }
+
+/* poster */
+.poster-link { position: relative; display: block; border-radius: 6px; overflow: hidden; }
+.poster-link img {
+  display: block;
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+/* título */
+.movie-title {
+  margin-top: 14px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+}
+
+/* play badge (esquina superior izquierda) */
+.play-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 46px;
+  height: 46px;
+  background: #0d6efd; /* azul */
+  border-radius: 6px;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(13,110,253,0.25);
+}
+
+/* triángulo blanco dentro del badge */
+.play-badge::after {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 12px;
+  border-left: 12px solid #fff;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+/* bookmark (esquina superior derecha) */
+.bookmark-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(255,255,255,0.9);
+  background: rgba(0,0,0,0.25);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* strip controls: rombos centrados abajo */
+.top-movies-strip .strip-controls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -64px;              /* bajamos más los controles */
+  display: flex;
+  gap: 40px;                  /* más separación entre rombos */
+  z-index: 20;
+}
+.top-movies-strip .strip-controls button {
+  position: relative; /* necesario para posicionar el pseudo-elemento */
+  width: 56px;
+  height: 56px;
+  border: 2px solid rgba(255,255,255,0.25);
+  background: transparent;
+  color: #fff;
+  border-radius: 6px;
+  transform: rotate(45deg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, border-color .15s ease, transform .12s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  margin: 0;
+}
+
+/* Pseudo-elemento centrado dentro del rombo que compensa la rotación del botón
+   para que la flecha quede horizontal (no girada) */
+.top-movies-strip .strip-controls button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg); /* compensa el rotate(45deg) del botón */
+  font-size: 20px;
+  line-height: 1;
+  color: #fff;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* Contenido específico: prev = flecha a la izquierda, next = flecha a la derecha */
+.top-movies-strip .strip-controls button.prev::before { content: "❮"; }
+.top-movies-strip .strip-controls button.next::before { content: "❯"; }
+
+/* hover mantiene la orientación correcta (el botón se «eleva», la flecha sigue horizontal) */
+.top-movies-strip .strip-controls button:hover { transform: rotate(45deg) translateY(-4px); }
+/* ...existing code... */
+
+/* accesibilidad: ocultar aria-hidden elementos visuales si necesario */
+.poster-link .play-badge,
+.poster-link .bookmark-badge { pointer-events: none; }
+
+/* Asegura que cualquier badge residual no se muestre */
+.play-badge,
+.bookmark-badge {
+  display: none !important;
+}
+
+/* Evitar subrayado en el enlace "Ver recibo" y su contenido (icono, texto, badge) */
+.btn-cart,
+.btn-cart * {
+  text-decoration: none !important;
+  -webkit-text-decoration: none !important;
+}
+
+/* Mantener el texto del botón en blanco aunque haya reglas heredadas */
+.btn-cart > span { color: #fff !important; }
+
+/* responsive: reduce tamaño en pantallas pequeñas */
+@media (max-width: 900px) {
+  .movie-card { width: 180px; }
+  .poster-link img { height: 280px; }
+}
+@media (max-width: 560px) {
+  .strip { gap: 18px; padding: 12px; }
+  .movie-card { width: 150px; }
+  .poster-link img { height: 220px; }
+  .movie-title { font-size: .88rem; }
+}
+
+/* Auth / login / create user:
+   - tarjeta central para formularios de autenticación con fondo semitransparente
+   - ancho máximo para mantener las columnas de formulario legibles */
+.auth-wrapper { padding: 0 12px; }
+.auth-card {
+  width: 100%;
+  max-width: 720px;    /* coincide con el contenedor */
+  margin: 0 auto;
+  padding: 22px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.35); /* opcional, quita si no quieres fondo */
+}
+
+/* Inputs y botones dentro del área de auth: ocupan todo el ancho y son cómodos de usar */
+.auth-card input[type="text"],
+.auth-card input[type="password"],
+.auth-card input,
+.auth-card textarea,
+.auth-card select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+/* Botones más prominentes dentro del auth para acciones principales */
+.auth-card .btn,
+.auth-card button {
+  min-width: 140px;
+  padding: 10px 14px;
+}
+
+/* Center main container */
+.content.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Top movies: grid of 4 centered columns */
+.top-movies-strip {
+  text-align: center;
+  padding-bottom: 80px;
+}
+.top-movies-strip .strip-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+
+/* Grid fijo de 4 columnas con tarjetas de ancho fijo */
+.top-movies-strip .strip {
+  display: grid;
+  grid-template-columns: repeat(4, 220px);
+  gap: 28px;
+  justify-content: center;
+  align-items: start;
+  max-width: calc(220px * 4 + 28px * 3);
+  margin: 0 auto;
+  padding: 20px 12px;
+  overflow: visible;
+}
+
+/* Cada tarjeta mantiene tamaño fijo: ancho 220px */
+.top-movies-strip .movie-card {
+  width: 220px;
+  flex: 0 0 220px;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  background: var(--card-bg);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Póster forzado a idénticas dimensiones (misma proporción que antes) */
+.top-movies-strip .poster-link img,
+.top-movies-strip .poster-link .thumb-img {
+  width: 100%;
+  height: 330px;       /* altura fija para uniformidad */
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(2,8,20,0.6);
+}
+
+/* Título bajo el póster conserva estilo y recorte */
+.top-movies-strip .movie-title {
+  margin-top: 12px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Oculta controles de strip al usar grid */
+.top-movies-strip .strip-controls { display: none !important; }
+
+/* Responsive: adapta columnas pero mantiene proporciones del póster */
+@media (max-width: 1100px) {
+  .top-movies-strip .strip { grid-template-columns: repeat(3, 1fr); max-width: 100%; }
+  .top-movies-strip .movie-card { width: auto; flex: 0 0 auto; }
+}
+@media (max-width: 768px) {
+  .top-movies-strip .strip { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .top-movies-strip .strip { grid-template-columns: 1fr; }
+  .top-movies-strip .poster-link img { height: 280px; } /* reduce altura en móvil */
+}
+
+/* Sección: Oferta destacada (estilo completo similar a la captura)
+   - Rallas arriba/abajo en blanco
+   - Texto totalmente en blanco
+   - Imagen izquierda más grande
+   - Botón con forma de flecha, más grande y alineado a la derecha */
+.special-offer {
+  color: #ffffff; /* fuerza texto blanco */
+  padding-top: 32px;
+  padding-bottom: 32px;
+  background: transparent;
+}
+
+.special-offer .offer-row {
+  position: relative;
+  padding: 6px 0;
+}
+
+/* Rallas/dividers: blancas (ajusta opacity si quieres más suaves) */
+.special-offer .offer-divider {
+  height: 1px;
+  background: #ffffff;
+  opacity: 0.12; /* 1 = totalmente opaca, 0.12 = sutil */
+  margin: 0 0 24px 0;
+}
+
+/* Estructura fila interna */
+.special-offer .row.offer-inner {
+  align-items: center;
+}
+
+/* Imagen izquierda, más grande */
+.offer-img {
+  max-width: 340px; /* tamaño aumentado */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.65);
+  border-radius: 6px;
+  display: block;
+}
+
+/* Texto: títulos y descripción en blanco y más grandes */
+.offer-title {
+  font-size: 1.45rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.offer-desc {
+  color: #ffffff;
+  opacity: 0.96;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.offer-valid {
+  color: rgba(238, 231, 231, 0.78);
+  font-size: 0.98rem;
+  margin-top: 6px;
+}
+
+/* Botón con forma de flecha a la derecha (mayor tamaño) */
+.btn-offer {
+  display: inline-block;
+  background: #0d6efd;
+  color: #fff;
+  padding: 14px 26px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+  -webkit-clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%);
+  clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%);
+  box-shadow: 0 12px 36px rgba(120, 226, 152, 0.2);
+  white-space: nowrap;
+}
+
+    /* Efecto para el botón de la oferta: se mueve a la derecha y cambia a verde al hover/focus */
+    .btn-offer {
+      display: inline-block;
+      transition: transform 200ms ease, background-color 200ms ease, color 200ms ease;
+      transform: translateX(0);
+      will-change: transform, background-color;
+    }
+    .btn-offer:hover,
+    .btn-offer:focus {
+      transform: translateX(8px); /* mueve hacia la derecha */
+      background-color: #28a745 !important; /* verde */
+      color: #ffffff !important;
+      text-decoration: none;
+      outline: none;
+    }
+ 
+.btn-offer:hover,
+.btn-offer:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 50px rgba(47, 69, 100, 0.22);
+  text-decoration: none;
+}
+
+/* Alineado del botón en desktop (derecha) */
+.special-offer .btn-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Responsive: apilar y centrar en pantallas medianas/pequeñas */
+@media (max-width: 991.98px) {
+  .offer-img { max-width: 260px; margin: 0 auto 6px auto; display: block; }
+  .offer-title { font-size: 1.25rem; text-align: center; }
+  .offer-desc { text-align: center; }
+  .special-offer .btn-col { justify-content: center; margin-top: 8px; }
+  .special-offer .offer-divider { margin: 12px 0; }
+  .btn-offer { -webkit-clip-path: none; clip-path: none; border-radius: 6px; padding-left: 16px; padding-right: 16px; }
+}
+
+/* Móvil: seguir reduciendo tamaño y espaciado */
+@media (max-width: 575.98px) {
+  .offer-img { max-width: 180px; }
+  .offer-title { font-size: 1.05rem; }
+  .offer-desc { font-size: 0.95rem; }
+  .special-offer { padding-top: 18px; padding-bottom: 18px; }
+}
+    
+    
+
+      /* Modal popup cookie (scope local) */
+      .cookie-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.5);
+        z-index: 1100;
+      }
+      .cookie-modal {
+        background: #fff;
+        color: #000;
+        max-width: 600px;
+        width: calc(100% - 40px);
+        border-radius: 10px;
+        padding: 18px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .cookie-modal p { margin:0; flex:1 1 60%; font-size:14px; }
+      .cookie-modal .actions { display:flex; gap:8px; flex:1 1 35%; justify-content:flex-end; }
+      .cookie-modal .btn { padding:8px 12px; border-radius:6px; border:0; cursor:pointer; font-weight:600; }
+      .cookie-modal .btn.accept { background:#28a745; color:#fff; }
+      .cookie-modal .btn.reject { background:#dc3545; color:#fff; }
+
+      /* Bloqueador si rechazan */
+      .cookie-blocker { position:fixed; inset:0; background:rgba(0,0,0,0.92); color:#fff; display:none; z-index:1200; align-items:center; justify-content:center; text-align:center; padding:20px; }
+      .cookie-blocker .card { max-width:720px; }
+      .cookie-blocker .leave { display:inline-block; margin-top:12px; background:#fff; color:#000; padding:8px 12px; border-radius:6px; text-decoration:none; font-weight:600; }
+      @media (max-width:520px){ .cookie-modal{ flex-direction:column; align-items:flex-start; } .cookie-modal .actions{ width:100%; justify-content:flex-end; } }
+
+.accent-heading {
+  color: #df710a; /* color naranja */
+  margin: 0;
+}
+
+/* Botones con carrito: fondo verde consistente */
+.btn-cart {
+  background: #28a745 !important;
+  border-color: #218838 !important;
+  color: #fff !important;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
+}
+.btn-cart:hover {
+  background: #218838 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(33,136,56,0.14);
+}
+.btn-cart:active { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+.btn-cart.icon-btn { width:40px; height:34px; padding:0; justify-content:center; }
+/* Botón "rojo claro" (variante suave de danger) */
+.btn-danger-soft {
+  background: #ff6b6b !important;    /* rojo claro solicitado */
+  border-color: #e05555 !important;
+  color: #fff !important;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
+  font-weight: 700;
+}
+.btn-danger-soft:hover {
+  background: #e05555 !important;    /* tono más oscuro en hover */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(224,85,85,0.14);
+}
+.btn-danger-soft:active { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+
+/* Variante compacta icon-only (misma medida que usas en la UI) */
+.btn-danger-soft.icon-btn { width:40px; height:34px; padding:0; }
+/* Badge verde para contadores de carrito y quitar subrayado heredado */
+.badge-cart {
+  background: #28a745 !important;   /* verde */
+  border: 0 !important;
+  color: #fff !important;
+  text-decoration: none !important; /* evitar subrayado si el padre aplica text-decoration */
+  display: inline-block;
+  font-size: 0.67rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 10px rgba(40,167,69,0.12);
+}
+/* asegurar que badges dentro de enlaces no se subrayen */
+a .badge-cart { text-decoration: none !important; }
+
+/* Footer: sección "Compra" con icono y enlaces separados por / */
+.footer-links .footer-shop { gap: 8px; }
+.footer-links .icon-cart { color: var(--accent); flex: 0 0 20px; height: 20px; width: 20px; }
+.footer-links .shop-title { color: var(--accent); font-weight: 800; font-size: 0.95rem; letter-spacing: .2px; }
+
+/* Footer: enlaces en dos filas (2 arriba / 3 abajo) centrados */
+.footer-links .footer-nav { margin: 0; padding: 0; gap: 8px; }
+.footer-links .footer-nav li { display: inline-block; list-style: none; }
+.footer-links .footer-nav li a { color: var(--surface-text); text-decoration: none; padding: 4px 6px; display: inline-block; text-align: center; }
+.footer-links .footer-nav li a:hover { color: var(--accent); text-decoration: underline; }
+
+/* Separador '/' */
+.footer-links .footer-nav li.sep { color: rgba(255,255,255,0.38); pointer-events: none; padding: 0 6px; }
+
+/* Ajustes responsivos: mantener centrado y legible en móvil */
+@media (max-width: 576px) {
+  .footer-links .footer-nav { gap: 6px; }
+  .footer-links .footer-nav li a { font-size: 0.95rem; padding: 3px 5px; }
+}
+
+/* Centrar el bloque "Nuestra Web" dentro de la columna derecha */
+.col-md-4.text-md-end .footer-links {
+  text-align: center !important;
+}
+.col-md-4.text-md-end .footer-links .footer-shop {
+  justify-content: center !important; /* centra icono + título */
+}
+.col-md-4.text-md-end .footer-links .shop-title {
+  display: inline-block;
+  text-align: center !important;
+}
+/* Asegura que las dos filas de enlaces se mantengan centradas */
+.col-md-4.text-md-end .footer-nav { justify-content: center !important; }
+
+/* Mantener "Nuestra Web" siempre naranja sin verse afectado por el tema */
+.site-footer .shop-title,
+footer .shop-title {
+  color: #ff7a18 !important; /* naranja fijo */
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+  
+/* Si hay iconos adjuntos (ej. SVG) forzar también el color */
+.site-footer .shop-title svg,
+footer .shop-title svg {
+  fill: #ff7a18 !important;
+}
+
+/* Botón "Volver al catálogo": marco negro y texto blanco; al hover fondo negro y texto blanco */
+a.btn.btn-outline-dark,
+.button.btn-outline-dark,
+.btn-outline-dark {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Hover / focus: fondo negro, texto blanco (sin cambio de color de texto) */
+a.btn.btn-outline-dark:hover,
+a.btn.btn-outline-dark:focus,
+.btn-outline-dark:hover,
+.btn-outline-dark:focus,
+.btn-outline-dark:focus-visible {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  outline: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+/* Botón Quitar: fondo rojo oscuro y texto blanco */
+.btn-danger,
+.remove-btn {
+  background-color: #c32b2b; /* rojo intenso */
+  color: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.35);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color .14s ease, transform .08s ease, box-shadow .12s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+/* Hover / focus: un tono más oscuro (sigue con letras blancas) */
+.btn-danger:hover,
+.remove-btn:hover,
+.btn-danger:focus,
+.remove-btn:focus {
+  background-color: #981f1f;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(152,31,31,0.18);
+  outline: none;
+}
+
+/* Accesibilidad: focus-visible */
+.btn-danger:focus-visible,
+.remove-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(195,43,43,0.18);
+}
+
